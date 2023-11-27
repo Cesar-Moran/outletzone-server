@@ -1,0 +1,52 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// If everything goes well, create a token, first the payload (the information that the token will store)
+// Then, the jwtSecret is to ensure the password is safe and not anyone can guess it.
+// the expiresIn is the time that the token will last until it expires in this case 1 hour
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  role      ROLE     @default(USER)
+}
+
+model Product {
+  id                  String    @id @default(uuid())
+  product_name        String
+  product_price       Int
+  product_location    String
+  product_shipping    String
+  product_quantity    Int
+  product_description String
+  product_condition   String
+  product_details     String
+  product_image       String
+  category            CATEGORIA
+}
+
+enum ROLE {
+  USER
+  ADMIN
+}
+
+enum CATEGORIA {
+  LAVADORA
+  NEVERA
+  TELEFONO
+  COMPUTADORA
+  TELEVISOR
+  ESTUFA
+  ARTICULOPARAHOGAR
+}
