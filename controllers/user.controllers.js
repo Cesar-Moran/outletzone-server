@@ -85,10 +85,7 @@ const login = async (req, res) => {
         createdAt: validUser.createdAt,
         role: validUser.role,
       },
-      jwtSecret,
-
-      // Send the token to the client
-      { expiresIn: 3600 }
+      jwtSecret
     );
     console.log(token);
     res.json(token);

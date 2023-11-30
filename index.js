@@ -13,6 +13,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(userRoutes);
 app.use(productRoutes);
+
 const port = process.env.LISTEN_PORT;
 
 app.listen(port, () => {

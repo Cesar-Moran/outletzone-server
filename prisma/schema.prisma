@@ -32,7 +32,10 @@ model Product {
   product_description String
   product_condition   String
   product_details     String
+  product_guarantee   String
+  product_status      String
   product_image       String
+  createdAt           DateTime  @default(now())
   category            CATEGORIA
 }
 
