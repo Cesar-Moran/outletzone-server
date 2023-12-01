@@ -18,31 +18,63 @@ const register = async (req, res) => {
   // If valid email, give an error
 
   if (validEmail) {
-    return res.status(404).send("El email ya existe.");
+    return res.status(500).send("El email ya existe.");
   }
 
   // Encrypt the password
   const hashedPassword = await bcrypt.hash(password, 10);
-  // If the confirm password is not equal to the password, give an error with the status code 404
+  // If the confirm password is not equal to the password, give an error with the status code 500
   // , the message and return so it cancels the following code.
   if (confirm_password !== password) {
     return res
-      .status(404)
+      .status(500)
       .send("El campo de confirmar contraseña no es igual a la contraseña.");
   }
 
   // If everything is ok, create the user with the data.
 
-  const user = await prisma.user.create({
+  // Send the user in JSON with a status code of 200
+
+  const userRequest = await prisma.registeredUsers.create({
     data: {
       email,
       password: hashedPassword,
     },
   });
 
-  // Send the user in JSON with a status code of 200
+  res.status(200).json(userRequest);
+};
 
-  res.status(200).json(user);
+const registerRequests = async (req, res) => {
+  const requests = await prisma.registeredUsers.findMany();
+  res.send(requests);
+};
+
+const acceptRequest = async (req, res) => {
+  const validRequest = await prisma.registeredUsers.findUnique({
+    where: {
+      id: parseInt(req.params.id),
+    },
+  });
+
+  if (!validRequest) {
+    return res.status(500).send("Request inválida");
+  }
+
+  const user = await prisma.user.create({
+    data: {
+      email: validRequest.email,
+      password: validRequest.password,
+    },
+  });
+
+  const deletedRegisterRow = await prisma.registeredUsers.delete({
+    where: {
+      id: parseInt(req.params.id),
+    },
+  });
+
+  res.send({ user, deletedRegisterRow });
 };
 
 // Login controller
@@ -56,10 +88,10 @@ const login = async (req, res) => {
   const validUser = await prisma.user.findUnique({ where: { email } });
 
   // If validUser is false, it means that the email doesn't exists in the database, which means that the user is not
-  // registered. Send an error with a status code of 404 and a message.
+  // registered. Send an error with a status code of 500 and a message.
   if (!validUser) {
     return res
-      .status(404)
+      .status(500)
       .send("No se pudo encontrar un usuario con ese email.");
   }
 
@@ -68,9 +100,9 @@ const login = async (req, res) => {
   const validPassword = await bcrypt.compare(password, validUser.password);
 
   // If the password is not valid with the hashed password in the database, send an error
-  // with the status code of 404 and a message.
+  // with the status code of 500 and a message.
   if (!validPassword) {
-    return res.status(404).send("La contraseña no es válida.");
+    return res.status(500).send("La contraseña no es válida.");
   }
 
   try {
@@ -97,4 +129,4 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { register, login };
+module.exports = { register, login, registerRequests, acceptRequest };

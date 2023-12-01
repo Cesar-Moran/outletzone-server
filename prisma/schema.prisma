@@ -19,7 +19,7 @@ model User {
   email     String   @unique
   password  String
   createdAt DateTime @default(now())
-  role      ROLE     @default(USER)
+  role      ROLE     @default(ADMIN)
 }
 
 model Product {
@@ -39,9 +39,18 @@ model Product {
   category            CATEGORIA
 }
 
+model RegisteredUsers {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  role      ROLE     @default(ADMIN)
+}
+
 enum ROLE {
   USER
   ADMIN
+  DEV
 }
 
 enum CATEGORIA {
