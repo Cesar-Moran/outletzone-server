@@ -40,7 +40,7 @@ const filterProductsByCategory = async (req, res) => {
       const command = new GetObjectCommand(getObjectParams);
       // getSignedUrl accepts 3 parameters: the s3 client connection, the command that will be executed
       // and optionally you can pass a expiresIn and other options
-      const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
+      const url = await getSignedUrl(s3, command);
       // Creates a imageUrl link in the database with the signed url
       product.imageUrl = url;
     }
@@ -50,4 +50,34 @@ const filterProductsByCategory = async (req, res) => {
   res.send(filteredProducts);
 };
 
-module.exports = { filterProductsByCategory };
+const filterProductsByGuarantee = async (req, res) => {
+  // Finds all the products that have the guarantee that is being passed on the url params
+  const filteredProducts = await prisma.product.findMany({
+    where: {
+      product_guarantee: req.params.guarantee,
+    },
+  });
+
+  for (const product of filteredProducts) {
+    // For each product found in products findMany function, do the following code:
+    if (product.product_image) {
+      // If product.product_image is found (true), get a signedUrl for the specific image of that product
+      const getObjectParams = {
+        Bucket: bucketName,
+        Key: product.product_image,
+      };
+
+      const command = new GetObjectCommand(getObjectParams);
+      // getSignedUrl accepts 3 parameters: the s3 client connection, the command that will be executed
+      // and optionally you can pass a expiresIn and other options
+      const url = await getSignedUrl(s3, command);
+      // Creates a imageUrl link in the database with the signed url
+      product.imageUrl = url;
+    }
+  }
+
+  // Sends the filtered products
+  res.send(filteredProducts);
+};
+
+module.exports = { filterProductsByCategory, filterProductsByGuarantee };

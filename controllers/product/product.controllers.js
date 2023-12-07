@@ -22,8 +22,9 @@ const secretAccessKey = process.env.SECRET_ACCESS_KEY;
 const categories = [
   "LAVADORA",
   "NEVERA",
-  "CELULAR",
+  "TELEFONO",
   "ESTUFA",
+  "TELEVISOR",
   "ARTICULOPARAHOGAR",
   "COMPUTADORA",
   "GENERAL",
@@ -76,7 +77,7 @@ const addProduct = async (req, res) => {
 
   /// If category field of the client doesn't includes any of the available categories, send an error
   if (!categories.includes(category.toUpperCase())) {
-    return res.status(400).send("Categoría no válida");
+    return res.status(400).send("Invalid category");
   }
 
   // If everything goes well, create the product into the database
@@ -117,7 +118,7 @@ const displayProducts = async (req, res) => {
       const command = new GetObjectCommand(getObjectParams);
       // getSignedUrl accepts 3 parameters: the s3 client connection, the command that will be executed
       // and optionally you can pass a expiresIn and other options
-      const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
+      const url = await getSignedUrl(s3, command);
       // Creates a imageUrl link in the database with the signed url
       product.imageUrl = url;
     }
@@ -136,13 +137,13 @@ const displaySingleProduct = async (req, res) => {
   });
 
   // Does the same process on displayProducts
-  if (product.product_image) {
+  if (product?.product_image) {
     const getObjectParams = {
       Bucket: bucketName,
       Key: product.product_image,
     };
     const command = new GetObjectCommand(getObjectParams);
-    const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
+    const url = await getSignedUrl(s3, command);
     product.imageUrl = url;
   }
 
@@ -166,10 +167,31 @@ const verifyProductQuantity = async (req, res) => {
   res.json({ quantityAvailable: product });
 };
 
+const deleteProduct = async (req, res) => {
+  const productToDelete = await prisma.product.findUnique({
+    where: {
+      id: req.params.id,
+    },
+  });
+
+  if (!productToDelete) {
+    return res.status(400).status("Product not found");
+  }
+
+  const deletedProduct = await prisma.product.delete({
+    where: {
+      id: req.params.id,
+    },
+  });
+
+  res.send(deletedProduct);
+};
+
 module.exports = {
   uploadSingle: upload.single("product_image"),
   addProduct,
   displayProducts,
   displaySingleProduct,
   verifyProductQuantity,
+  deleteProduct,
 };

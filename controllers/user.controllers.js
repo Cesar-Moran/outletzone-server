@@ -9,7 +9,7 @@ const register = async (req, res) => {
   const { email, password, confirm_password } = req.body;
 
   // Find a user in the database with the email  that is being sent to the server
-  const validEmail = await prisma.user.findUnique({
+  const validEmail = await prisma.registeredUsers.findUnique({
     where: {
       email,
     },
@@ -45,22 +45,30 @@ const register = async (req, res) => {
   res.status(200).json(userRequest);
 };
 
+// Get requests controller
+
 const registerRequests = async (req, res) => {
   const requests = await prisma.registeredUsers.findMany();
   res.send(requests);
 };
 
+// Accept request controller
+
 const acceptRequest = async (req, res) => {
+  // Finds a valid request
   const validRequest = await prisma.registeredUsers.findUnique({
     where: {
       id: parseInt(req.params.id),
     },
   });
 
+  // If there is not a valid request, send an error
+
   if (!validRequest) {
     return res.status(500).send("Request inválida");
   }
 
+  // Create a user with the data and password from the validRequest
   const user = await prisma.user.create({
     data: {
       email: validRequest.email,
@@ -68,13 +76,43 @@ const acceptRequest = async (req, res) => {
     },
   });
 
+  // Delete the row where the request was
+
   const deletedRegisterRow = await prisma.registeredUsers.delete({
     where: {
       id: parseInt(req.params.id),
     },
   });
+  // Send the user and the deleted row
 
   res.send({ user, deletedRegisterRow });
+};
+
+// Denie request controller
+const denieRequest = async (req, res) => {
+  // Finds a valid request
+
+  const validRequest = await prisma.registeredUsers.findUnique({
+    where: {
+      id: parseInt(req.params.id),
+    },
+  });
+
+  // If there isn't a valid request, send an error
+  if (!validRequest) {
+    return res.status(500).send("Request inválida");
+  }
+
+  // Delete the request where the id is equal to the id that is sent in the URL params
+
+  const deletedUser = await prisma.registeredUsers.delete({
+    where: {
+      id: parseInt(req.params.id),
+    },
+  });
+
+  // Send the user
+  res.send({ deletedUser });
 };
 
 // Login controller
@@ -129,4 +167,10 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { register, login, registerRequests, acceptRequest };
+module.exports = {
+  register,
+  login,
+  registerRequests,
+  acceptRequest,
+  denieRequest,
+};
