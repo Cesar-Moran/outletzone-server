@@ -63,12 +63,33 @@ const addProduct = async (req, res) => {
 
   const imageName = randomImageName();
 
+  if (
+    !product_price ||
+    !product_quantity ||
+    !product_shipping ||
+    !product_location ||
+    !product_status ||
+    !product_guarantee ||
+    !product_description ||
+    !product_condition ||
+    !product_details ||
+    !product_name
+  ) {
+    res.status(400).send("Los campos deben estar llenos");
+    return;
+  }
+
+  if (req.file?.buffer === undefined) {
+    res.status(400).send("La imagen también es requerida");
+    return;
+  }
+
   // This params will execute on the put object command
   const params = {
     Bucket: bucketName,
     Key: imageName,
-    Body: req.file.buffer,
-    ContentType: req.file.mimetype,
+    Body: req?.file?.buffer,
+    ContentType: req.file?.mimetype,
   };
   // Assigns the params to the put object command
   const command = new PutObjectCommand(params);
