@@ -28,6 +28,10 @@ const categories = [
   "ARTICULOPARAHOGAR",
   "COMPUTADORA",
   "GENERAL",
+  "ORGANIZADORES",
+  "ACCESORIOS",
+  "ACCESORIOCOCINA",
+  "RESPUESTOS",
 ];
 
 // Random image name to each product image, to prevent s3 images replacing images with same name
