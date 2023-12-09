@@ -146,7 +146,6 @@ const login = async (req, res) => {
   try {
     // If everything goes well, create a token, first the payload (the information that the token will store)
     // Then, the jwtSecret is to ensure the password is safe and not anyone can guess it.
-    // the expiresIn is the time that the token will last until it expires in this case 1 hour
 
     const token = jwt.sign(
       {

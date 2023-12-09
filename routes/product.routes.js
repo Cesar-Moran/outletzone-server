@@ -15,7 +15,11 @@ const multer = require("multer");
 const {
   filterProductsByGuarantee,
 } = require("../controllers/product/product.filter.controllers");
-const { deleteProduct } = require("../controllers/product/product.controllers");
+const {
+  deleteProduct,
+  editProduct,
+  getProductToEdit,
+} = require("../controllers/product/product.controllers");
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
@@ -31,5 +35,7 @@ router.get(
 );
 router.delete("/api/deleteProduct/:id", deleteProduct);
 router.post("/api/addProduct", upload.single("product_image"), addProduct);
+router.put("/api/editProduct/:id", editProduct);
+router.get("/api/getProductToEdit/:id", getProductToEdit);
 
 module.exports = router;

@@ -6,6 +6,22 @@ const {
   GetObjectCommand,
 } = require("@aws-sdk/client-s3");
 
+// Product categories availables
+const categories = [
+  "LAVADORA",
+  "NEVERA",
+  "TELEFONO",
+  "ESTUFA",
+  "TELEVISOR",
+  "ARTICULOPARAHOGAR",
+  "COMPUTADORA",
+  "GENERAL",
+  "ORGANIZADORES",
+  "ACCESORIOS",
+  "ACCESORIOCOCINA",
+  "REPUESTOS",
+];
+
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const bucketName = process.env.BUCKET_NAME;
 const bucketRegion = process.env.BUCKET_REGION;

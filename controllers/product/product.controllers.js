@@ -18,22 +18,6 @@ const bucketRegion = process.env.BUCKET_REGION;
 const accessKey = process.env.ACCESS_KEY;
 const secretAccessKey = process.env.SECRET_ACCESS_KEY;
 
-// Product categories availables
-const categories = [
-  "LAVADORA",
-  "NEVERA",
-  "TELEFONO",
-  "ESTUFA",
-  "TELEVISOR",
-  "ARTICULOPARAHOGAR",
-  "COMPUTADORA",
-  "GENERAL",
-  "ORGANIZADORES",
-  "ACCESORIOS",
-  "ACCESORIOCOCINA",
-  "RESPUESTOS",
-];
-
 // Random image name to each product image, to prevent s3 images replacing images with same name
 const randomImageName = (bytes = 32) =>
   crypto.randomBytes(bytes).toString("hex");
@@ -212,6 +196,54 @@ const deleteProduct = async (req, res) => {
   res.send(deletedProduct);
 };
 
+const getProductToEdit = async (req, res) => {
+  const productToEdit = await prisma.product.findUnique({
+    where: {
+      id: req.params.id,
+    },
+  });
+
+  res.send(productToEdit);
+};
+
+const editProduct = async (req, res) => {
+  const {
+    editedName,
+    editedPrice,
+    editedDisponibility,
+    editedCondition,
+    editedLocation,
+    editedStatus,
+  } = req.body;
+
+  if (
+    !editedName ||
+    !editedPrice ||
+    !editedDisponibility ||
+    !editedCondition ||
+    !editedLocation ||
+    !editedStatus
+  ) {
+    res.status(400).send("Los campos deben estar llenos");
+    return;
+  }
+  const productToEdit = await prisma.product.update({
+    where: {
+      id: req.params.id,
+    },
+    data: {
+      product_name: editedName,
+      product_price: editedPrice,
+      product_quantity: editedDisponibility,
+      product_condition: editedCondition,
+      product_location: editedLocation,
+      product_status: editedStatus,
+    },
+  });
+
+  res.send(productToEdit);
+};
+
 module.exports = {
   uploadSingle: upload.single("product_image"),
   addProduct,
@@ -219,4 +251,6 @@ module.exports = {
   displaySingleProduct,
   verifyProductQuantity,
   deleteProduct,
+  editProduct,
+  getProductToEdit,
 };
