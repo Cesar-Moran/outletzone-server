@@ -18,6 +18,22 @@ const bucketRegion = process.env.BUCKET_REGION;
 const accessKey = process.env.ACCESS_KEY;
 const secretAccessKey = process.env.SECRET_ACCESS_KEY;
 
+// Product categories availables
+const categories = [
+  "LAVADORA",
+  "NEVERA",
+  "TELEFONO",
+  "ESTUFA",
+  "TELEVISOR",
+  "ARTICULOPARAHOGAR",
+  "COMPUTADORA",
+  "GENERAL",
+  "ORGANIZADORES",
+  "ACCESORIOS",
+  "ACCESORIOCOCINA",
+  "REPUESTOS",
+];
+
 // Random image name to each product image, to prevent s3 images replacing images with same name
 const randomImageName = (bytes = 32) =>
   crypto.randomBytes(bytes).toString("hex");
