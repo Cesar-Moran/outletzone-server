@@ -129,7 +129,9 @@ const addProduct = async (req, res) => {
 };
 
 const displayProducts = async (req, res) => {
-  const products = await prisma.product.findMany();
+  const products = await prisma.product.findMany({
+    take: 10,
+  });
 
   for (const product of products) {
     // For each product found in products findMany function, do the following code:
