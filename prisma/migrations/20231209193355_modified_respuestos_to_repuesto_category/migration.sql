@@ -1,0 +1,14 @@
+/*
+  Warnings:
+
+  - The values [RESPUESTOS] on the enum `CATEGORIA` will be removed. If these variants are still used in the database, this will fail.
+
+*/
+-- AlterEnum
+BEGIN;
+CREATE TYPE "CATEGORIA_new" AS ENUM ('LAVADORA', 'NEVERA', 'TELEFONO', 'COMPUTADORA', 'TELEVISOR', 'ESTUFA', 'ARTICULOPARAHOGAR', 'ORGANIZADORES', 'ACCESORIOS', 'ACCESORIOCOCINA', 'REPUESTOS');
+ALTER TABLE "Product" ALTER COLUMN "category" TYPE "CATEGORIA_new" USING ("category"::text::"CATEGORIA_new");
+ALTER TYPE "CATEGORIA" RENAME TO "CATEGORIA_old";
+ALTER TYPE "CATEGORIA_new" RENAME TO "CATEGORIA";
+DROP TYPE "CATEGORIA_old";
+COMMIT;
