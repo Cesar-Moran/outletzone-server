@@ -23,7 +23,7 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 const router = Router();
 
-router.get("/api/displayProducts/:take", displayProducts);
+router.get("/api/displayProducts", displayProducts);
 router.get("/api/displaySingleProduct/:id", displaySingleProduct);
 router.get("/api/verifyProductQuantity/:id", verifyProductQuantity);
 router.get("/api/filterProductsByCategory/:category", filterProductsByCategory);
