@@ -130,7 +130,7 @@ const addProduct = async (req, res) => {
 
 const displayProducts = async (req, res) => {
   const products = await prisma.product.findMany({
-    take: 10,
+    take: req.params.take,
   });
 
   for (const product of products) {
