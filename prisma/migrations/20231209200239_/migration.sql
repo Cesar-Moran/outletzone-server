@@ -1,0 +1,2 @@
+-- DropEnum
+DROP TYPE "PRODUCT_STATUS";

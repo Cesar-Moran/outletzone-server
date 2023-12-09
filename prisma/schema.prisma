@@ -23,7 +23,7 @@ model User {
 }
 
 model Product {
-  id                  String         @id @default(uuid())
+  id                  String    @id @default(uuid())
   product_name        String
   product_price       Int
   product_location    String
@@ -33,9 +33,9 @@ model Product {
   product_condition   String
   product_details     String
   product_guarantee   GARANTIA
-  product_status      PRODUCT_STATUS
+  product_status      String
   product_image       String
-  createdAt           DateTime       @default(now())
+  createdAt           DateTime  @default(now())
   category            CATEGORIA
 }
 
@@ -70,11 +70,4 @@ enum CATEGORIA {
 enum GARANTIA {
   CONGARANTIA
   SINGARANTIA
-}
-
-enum PRODUCT_STATUS {
-  USADO
-  POCOUSADO
-  NUEVO
-  CASINUEVO
 }
